@@ -1,4 +1,3 @@
-import textwrap
 import tkinter as tk
 from PIL import Image, ImageTk
 import random
@@ -18,6 +17,35 @@ if len(prizes) == 0:
     print('prizes list is empty.')
     exit()
 
+
+def wrap_text_based_on_pixel_width(text, font, max_width):
+    words = text
+    wrapped_text = ""
+    line_width = 0
+
+    for word in words:
+        # 创建一个临时的Tkinter标签来测量单词宽度
+        temp_label = tk.Label(root, text=word, font=font)
+        temp_label.grid(row=0, column=0)  # 使用grid来布局标签
+        root.update_idletasks()  # 更新root以获取标签的尺寸
+        word_width = temp_label.winfo_width()  # 获取标签的宽度
+        temp_label.grid_forget()  # 从grid中移除临时标签
+
+        if line_width + word_width > max_width:
+            wrapped_text += "\n" + word  # 如果单词超过了最大宽度，则换行
+            line_width = word_width
+        else:
+            if wrapped_text:
+                wrapped_text += " " + word  # 在单词之间添加空格
+            else:
+                wrapped_text = word  # 开始新的一行
+            line_width += word_width
+
+    return wrapped_text
+
+    return wrapped_text
+
+
 # 随机打乱奖品列表
 random.shuffle(prizes)
 
@@ -34,12 +62,14 @@ background_photo = ImageTk.PhotoImage(background_image)
 background_label = tk.Label(root, image=background_photo)
 background_label.place(relwidth=1, relheight=1)
 
+
 # 定义点击礼盒的函数
 def open_box(box, prize_label):
     if box['state'] != 'disabled':
         prize = box.prize
-        wrapped_prize = textwrap.fill(prize, width=9)
-        lines = wrapped_prize.count('\n') + 1
+        font = ('Arial', 31)  # 定义字体和大小
+        max_width = 190  # 礼盒的最大宽度，以字符数为单位
+        wrapped_prize = wrap_text_based_on_pixel_width(prize, font, max_width)
 
         # 如果奖品尚未被抽走，则分配奖品
         prize_label.config(text=wrapped_prize, bg='white', font=('Arial', 31))
