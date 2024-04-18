@@ -2,19 +2,27 @@ import tkinter as tk
 from PIL import Image, ImageTk
 import random
 import os, json
+from tkinter import messagebox
 
 # 奖品列表
 prizes = []
 
 if os.path.exists('../data/prizes.json'):
-    with open('../data/prizes.json', 'r') as f:
-        prizes = json.load(f)
+    try:
+        with open('../data/prizes.json', 'r') as f:
+            prizes = json.load(f)
+    except Exception as e:
+        print('Failed to load prizes.json:', e)
+        messagebox.showerror('Error', f'Failed to load prizes.json:\n{e}')
+        exit()
 else:
     print('prizes.json file is not exists.')
+    messagebox.showerror('Error', 'prize.json file is not exists.')
     exit()
 
 if len(prizes) == 0:
     print('prizes list is empty.')
+    messagebox.showerror('Error', 'prizes list is empty.')
     exit()
 
 
