@@ -1,7 +1,9 @@
 import json
-import random
+import os.path
 import tkinter as tk
-from tkinter.messagebox import showerror, showinfo
+from tkinter import messagebox
+import random
+from change_the_prizes_list import run_mainloop
 from PIL import Image, ImageTk
 
 
@@ -58,13 +60,13 @@ class Box:
         """按钮点击事件处理"""
         self.button.config(state=tk.DISABLED)
         self.label.config(text=self.info)
-        showinfo(f'箱子{self.index}', self.info)
+        messagebox.showinfo(f'箱子{self.index}', self.info)
 
 
 def show_error_info(error_info: str):
     """显示错误信息"""
     print(f'[Error] {error_info}')
-    showerror('Error', error_info)
+    messagebox.showerror('Error', error_info)
 
 
 if __name__ == '__main__':
@@ -73,8 +75,21 @@ if __name__ == '__main__':
         # prize_list = ['test1', 'test2', 'test3', 'test4', 'test5', 'test6', 'test7', 'test8', 'test9', 'test10',
         #               'test11', 'test12']
         # Use prizes.json file's data
-        with open('../data/prizes.json', 'r') as f:
-            prize_list = json.load(f)
+        while True:
+            if os.path.exists('../data/prizes.json'):
+                with open('../data/prizes.json', 'r') as f:
+                    prize_list = json.load(f)
+                if len(prize_list) == 0:
+                    if messagebox.askquestion('提示', '未检测到存在奖品信息，请问需要添加吗?（否即退出）') == 'yes':
+                        run_mainloop()
+                    else:
+                        exit(0)
+                else:
+                    break
+            else:
+                with open('../data/prizes.json', 'w') as f:
+                    f.write('[]')
+
         random.shuffle(prize_list)
 
         root = tk.Tk()
