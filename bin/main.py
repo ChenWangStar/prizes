@@ -52,7 +52,7 @@ class Box:
 
         # 更新列和行的逻辑
         Box.column += 1
-        if Box.column > 6:
+        if Box.column > 14:
             Box.column = 1
             Box.row += 2
 
@@ -73,7 +73,7 @@ if __name__ == '__main__':
     try:
         # Example data
         # prize_list = ['test1', 'test2', 'test3', 'test4', 'test5', 'test6', 'test7', 'test8', 'test9', 'test10',
-        #               'test11', 'test12']
+        #               'test11', 'test12', 'test13', 'test14', 'test15']
         # Use prizes.json file's data
         while True:
             if os.path.exists('../data/prizes.json'):
@@ -94,7 +94,7 @@ if __name__ == '__main__':
 
         root = tk.Tk()
         root.title("抽奖")
-        root.geometry('800x600')
+        root.geometry('1920x1080')
         root.resizable(False, False)
 
         # 创建并注册按钮

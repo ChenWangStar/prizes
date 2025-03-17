@@ -1,18 +1,19 @@
-import tkinter as tk
-from PIL import Image, ImageTk
+import pandas as pd
 
-# 创建主窗口
-root = tk.Tk()
-root.title("缩放图片示例")
+# 创建数据
+data = {
+    "学号": list(range(1, 55)),
+    "性别": ["男", "女"] * 27,
+    "姓名": ["张三", "小红", "李四", "小兰", "王五", "小丽", "赵六", "小芳", "孙七", "小梅",
+             "周八", "小菊", "吴九", "小竹", "郑十", "小荷", "王十一", "小桃", "李十二", "小柳",
+             "张十三", "小杏", "刘十四", "小梨", "陈十五", "小梅", "杨十六", "小兰", "黄十七", "小菊",
+             "赵十八", "小竹", "周十九", "小荷", "吴二十", "小桃", "郑二十一", "小柳", "王二十二", "小杏",
+             "李二十三", "小梨", "张二十四", "小梅", "刘二十五", "小兰", "陈二十六", "小菊", "杨二十七", "小竹",
+             "黄二十八", "小荷", "赵二十九", "小桃"]
+}
 
-# 打开图片并缩放
-image = Image.open("img/box_closed.png")
-resized_image = image.resize((100, 100), Image.LANCZOS)  # 缩放到 100x100
-photo = ImageTk.PhotoImage(resized_image)
+# 创建DataFrame
+df = pd.DataFrame(data)
 
-# 创建按钮并添加缩放后的图片
-button = tk.Button(root, image=photo, command=lambda: print("按钮被点击了！"))
-button.pack(pady=20)
-
-# 运行主循环
-root.mainloop()
+# 保存为Excel文件
+df.to_excel("data.xlsx", index=False)
