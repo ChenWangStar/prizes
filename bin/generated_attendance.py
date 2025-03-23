@@ -1,63 +1,69 @@
 import os
+import tkinter as tk
+import webbrowser
+from tkinter import messagebox
+from datetime import datetime
 
 
-def generate_html(template_path, end_time, num_people):
-    """
-    根据模板文件生成一个动态调整结束时间和人数的签到 HTML 文件。
+def main_loop():
+    file_path = os.path.abspath('.')
+    output_directory_path = os.path.abspath('../output/')
+    template_path = os.path.join(file_path, '../attendance/new_evening.html')
 
-    :param template_path: 模板文件的路径。
-    :param end_time: 签到结束时间，格式为 "HH:MM"（例如 "18:50"）。
-    :param num_people: 签到人数。
-    """
-    # 读取模板文件
-    with open(template_path, "r", encoding="utf-8") as file:
-        html_content = file.read()
+    root = tk.Tk()
+    # component
+    tk.Label(root, text='班级总人数').pack()
+    number_of_class = tk.Entry(root, width=10)
+    number_of_class.pack()
 
-    # 替换模板中的结束时间和人数
-    html_content = html_content.replace("在18:50前到的同学请点击自己的学号进行签到",
-                                        f"在{end_time}前到的同学请点击自己的学号进行签到")
+    tk.Label(root, text='签到终止时间(小时)').pack()
+    time_hour = tk.Entry(root, width=10)
+    time_hour.pack()
 
-    # 生成动态人数的用户列表
-    user_list = list(range(1, num_people + 1))
-    html_content = html_content.replace(
-        "const userList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59];",
-        f"const userList = {user_list};"
-    )
+    tk.Label(root, text='签到终止时间(分钟)').pack()
+    time_min = tk.Entry(root, width=10)
+    time_min.pack()
 
-    # 提取用户输入的小时和分钟
-    end_hour = int(end_time.split(":")[0])
-    end_minute = int(end_time.split(":")[1])
+    def on_click():
+        try:
+            number = int(number_of_class.get())
+            time_h = int(time_hour.get())
+            time_m = int(time_min.get())
+            if not (0 <= time_h < 24 and 0 <= time_m < 60):
+                raise ValueError("时间输入无效：小时应在 0-23 之间，分钟应在 0-59 之间")
+            if number <= 0:
+                raise ValueError("班级人数必须大于 0")
 
-    # 替换计时器逻辑中的结束时间
-    # 查找并替换 todayEndTime.setHours 和 todayEndTime.setMinutes
-    target_line_hours = "todayEndTime.setHours(18);"
-    target_line_minutes = "todayEndTime.setMinutes(50);"
-    new_line_hours = f"todayEndTime.setHours({end_hour});"
-    new_line_minutes = f"todayEndTime.setMinutes({end_minute});"
+            with open(template_path, 'r', encoding='utf-8') as f:
+                template = f.read().split('\n')
+            for i, line in enumerate(template):
+                if '到的同学请点击自己的学号进行签到' in line:
+                    template[i] = f'<h2 class="title">在{time_h}:{time_m}前到的同学请点击自己的学号进行签到</h2>'
+                if 'const userList' in line:
+                    template[i] = f'    const userList = {[i + 1 for i in range(number)]}'
+                if 'todayEndTime.setHours' in line:
+                    template[i] = f'    todayEndTime.setHours({time_h})'
+                if 'todayEndTime.setMinutes' in line:
+                    template[i] = f'    todayEndTime.setMinutes({time_m})'
+            output_file_path = os.path.join(output_directory_path, f'{number}_{time_h}_{time_m}.html').replace('\\',
+                                                                                                               '//')
+            print(output_file_path)
+            with open(output_file_path, 'w',
+                      encoding='utf-8') as f:
+                f.write('\n'.join(template))
+            if tk.messagebox.askyesno('提示', '生成成功,是否打开签到页面?'):
+                webbrowser.open(f'file://{output_directory_path}')
+            else:
+                exit(0)
 
-    html_content = html_content.replace(target_line_hours, new_line_hours)
-    html_content = html_content.replace(target_line_minutes, new_line_minutes)
+        except Exception as e:
+            messagebox.showerror('错误', str(e))
 
-    # 保存生成的 HTML 文件
-    output_file = f"evening_signin_{end_time.replace(':', '')}_{num_people}people.html"
-    with open(output_file, "w", encoding="utf-8") as file:
-        file.write(html_content)
-
-    print(f"已生成文件: {output_file}")
+    tk.Button(root, text='生成', command=on_click).pack()
+    root.title('签到生成')
+    root.geometry('300x200')
+    root.mainloop()
 
 
-if __name__ == "__main__":
-    # 模板文件路径
-    template_path = "../attendance/new_evening.html"
-
-    # 检查模板文件是否存在
-    if not os.path.exists(template_path):
-        print(f"错误：模板文件 '{template_path}' 不存在！")
-        exit(1)
-
-    # 用户输入结束时间和人数
-    end_time = input("请输入签到结束时间（格式为 HH:MM，例如 18:50）：")
-    num_people = int(input("请输入签到人数："))
-
-    # 生成 HTML 文件
-    generate_html(template_path, end_time, num_people)
+if __name__ == '__main__':
+    main_loop()

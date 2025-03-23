@@ -52,7 +52,7 @@ def main():
 
     try:
         if os.path.exists('../data/data.xlsx'):
-            file_path = '../data/data.xlsx'  # 替换为你的 Excel 文件路径
+            file_path = '../data/data.xlsx'
             df = pd.read_excel(file_path)
             hard_data = df.columns.to_list()
             if '学号' not in hard_data or '性别' not in hard_data or '姓名' not in hard_data:
