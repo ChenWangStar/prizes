@@ -47,6 +47,7 @@ class Box:
 ## 抽号
 
 请确保 `/data` 目录下存在 `students.xlsx` 文件，文件格式如下图所示
+
 ![img1.png](web/resource/img1.png)
 
 - 请将花名册数据保存到Sheet1中
