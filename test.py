@@ -16,4 +16,4 @@ data = {
 df = pd.DataFrame(data)
 
 # 保存为Excel文件
-df.to_excel("data.xlsx", index=False)
+df.to_excel("students.xlsx", index=False)

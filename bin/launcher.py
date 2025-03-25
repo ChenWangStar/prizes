@@ -15,7 +15,7 @@ root.title("启动器")
 root.geometry("400x200")
 
 # 创建抽奖按钮
-btn_draw = tk.Button(root, text="抽奖", command=lambda: run_script('main.py'))
+btn_draw = tk.Button(root, text="抽奖", command=lambda: run_script('prizes.py'))
 btn_draw.pack(pady=10)
 
 # 创建抽号按钮

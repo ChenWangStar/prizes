@@ -51,8 +51,8 @@ def main():
         result_label.config(text=formatted_result, font=("Arial", 20), fg="blue")
 
     try:
-        if os.path.exists('../data/data.xlsx'):
-            file_path = '../data/data.xlsx'
+        if os.path.exists('../data/students.xlsx'):
+            file_path = '../data/students.xlsx'
             df = pd.read_excel(file_path)
             hard_data = df.columns.to_list()
             if '学号' not in hard_data or '性别' not in hard_data or '姓名' not in hard_data:
@@ -104,7 +104,7 @@ def main():
             entry.grid(row=0, column=8, padx=5)
 
             # 提交按钮
-            button = tk.Button(control_frame, text="提交", command=show_selected)
+            button = tk.Button(control_frame, text="抽取", command=show_selected)
             button.grid(row=0, column=9, padx=10)
 
             # 运行主循环

@@ -36,7 +36,7 @@ class Box:
         Box.index += 1
         self.index = Box.index  # 按钮的索引
 
-        self.photo = self.load_and_resize_image("../img/box_closed.png", (100, 100))
+        self.photo = self.load_and_resize_image("../resource/box_closed.png", (100, 100))
 
         self.button = tk.Button(
             self.window,
@@ -71,14 +71,11 @@ def show_error_info(error_info: str):
 
 if __name__ == '__main__':
     try:
-        # Example data
-        # prize_list = ['test1', 'test2', 'test3', 'test4', 'test5', 'test6', 'test7', 'test8', 'test9', 'test10',
-        #               'test11', 'test12', 'test13', 'test14', 'test15']
-        # Use prizes.json file's data
         while True:
             if os.path.exists('../data/prizes.json'):
                 with open('../data/prizes.json', 'r') as f:
                     prize_list = json.load(f)
+                prize_list = [f'奖品{x}' for x in range(60)]
                 if len(prize_list) == 0:
                     if messagebox.askquestion('提示', '未检测到存在奖品信息，请问需要添加吗?（否即退出）') == 'yes':
                         run_mainloop()
