@@ -1,5 +1,6 @@
 import json
 import os.path
+import time
 import tkinter as tk
 from tkinter import messagebox
 import random
@@ -13,6 +14,7 @@ class Box:
     column = 1  # 类变量，用于记录当前列
 
     def __init__(self, box_info: str, window: tk.Tk):
+        global photo
         """
         :param box_info: 盒子内部显示信息
         :param window: 窗口
@@ -23,20 +25,15 @@ class Box:
         self.button = None  # 用于保存按钮引用
         self.label = None  # 用于保存标签引用
 
+        self.image = photo
+
     def get_index(self) -> int:
         return self.index
-
-    def load_and_resize_image(self, path: str, size: tuple):
-        """加载并缩放图片"""
-        image = Image.open(path)
-        resized_image = image.resize(size, Image.LANCZOS)
-        return ImageTk.PhotoImage(resized_image)
 
     def registered_box(self):
         Box.index += 1
         self.index = Box.index  # 按钮的索引
-
-        self.photo = self.load_and_resize_image("../resource/box_closed.png", (100, 100))
+        self.photo = self.image
 
         self.button = tk.Button(
             self.window,
@@ -94,12 +91,19 @@ if __name__ == '__main__':
         root.geometry('1920x1080')
         root.resizable(False, False)
 
+        # Load image (box_closed.png)
+        image = Image.open('../resource/box_closed.png')
+        resized_image = image.resize((100, 100), Image.LANCZOS)
+        photo = ImageTk.PhotoImage(resized_image)
+
         # 创建并注册按钮
         boxes = []  # 用于保存所实例化对象
+        t = time.time()
         for info in prize_list:
             box = Box(info, root)
             boxes.append(box)
             box.registered_box()  # 注册按钮并显示
+        print(time.time() - t)
         root.mainloop()
     except Exception as e:
         show_error_info(f'遇到错误\n{str(e)}')
