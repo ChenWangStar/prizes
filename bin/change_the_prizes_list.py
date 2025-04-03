@@ -39,14 +39,14 @@ def run_mainloop():
     # 定义一个函数来加载prizes列表
     def load_prizes():
         global prizes
-        prizes = load_prizes_from_json('../data/prizes.json')
+        prizes = load_prizes_from_json(os.path.join(os.path.abspath(os.path.dirname(__file__)), '../data/prizes.json'))
         prize_listbox.delete(0, tk.END)
         for prize in prizes:
             prize_listbox.insert(tk.END, prize)
 
     # 定义一个函数来保存prizes列表
     def save_prizes():
-        save_prizes_to_json(prizes, '../data/prizes.json')
+        save_prizes_to_json(prizes, os.path.join(os.path.abspath(os.path.dirname(__file__)), '../data/prizes.json'))
         messagebox.showinfo("保存成功", "奖品已成功保存")
 
     # 定义一个函数来从JSON文件中读取prizes列表

@@ -1,6 +1,5 @@
 import json
 import os.path
-import time
 import tkinter as tk
 from tkinter import messagebox
 import random
@@ -69,8 +68,8 @@ def show_error_info(error_info: str):
 if __name__ == '__main__':
     try:
         while True:
-            if os.path.exists('../data/prizes.json'):
-                with open('../data/prizes.json', 'r') as f:
+            if os.path.exists(os.path.join(os.path.abspath(os.path.dirname(__file__)), '../data/prizes.json')):
+                with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), '../data/prizes.json'), 'r') as f:
                     prize_list = json.load(f)
                 prize_list = [f'奖品{x}' for x in range(60)]
                 if len(prize_list) == 0:
@@ -81,7 +80,7 @@ if __name__ == '__main__':
                 else:
                     break
             else:
-                with open('../data/prizes.json', 'w') as f:
+                with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), '../data/prizes.json'), 'w') as f:
                     f.write('[]')
 
         random.shuffle(prize_list)
@@ -92,18 +91,17 @@ if __name__ == '__main__':
         root.resizable(False, False)
 
         # Load image (box_closed.png)
-        image = Image.open('../resource/box_closed.png')
+        image = Image.open(os.path.join(os.path.abspath(os.path.dirname(__file__)), '../resource/box_closed.png'))
         resized_image = image.resize((100, 100), Image.LANCZOS)
         photo = ImageTk.PhotoImage(resized_image)
 
         # 创建并注册按钮
         boxes = []  # 用于保存所实例化对象
-        t = time.time()
+
         for info in prize_list:
             box = Box(info, root)
             boxes.append(box)
             box.registered_box()  # 注册按钮并显示
-        print(time.time() - t)
         root.mainloop()
     except Exception as e:
         show_error_info(f'遇到错误\n{str(e)}')

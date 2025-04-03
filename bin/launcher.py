@@ -1,10 +1,11 @@
 import tkinter as tk
 import subprocess
+import os
 
 
 def run_script(script_name):
-    # 使用subprocess模块运行指定的Python脚本
-    subprocess.Popen(['python', script_name], shell=True)
+
+    subprocess.Popen(['python', os.path.join(os.path.abspath(os.path.dirname(__file__)), script_name)], shell=True)
 
 
 # 创建主窗口
@@ -25,5 +26,7 @@ btn_random_number.pack(pady=10)
 btn_generated_attendance = tk.Button(root, text='签到', command=lambda: run_script('generated_attendance.py'))
 btn_generated_attendance.pack(pady=10)
 
+btn_timer = tk.Button(root, text='计时器', command=lambda: run_script('timer.py'))
+btn_timer.pack(pady=10)
 # 启动主循环
 root.mainloop()

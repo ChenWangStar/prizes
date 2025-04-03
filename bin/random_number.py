@@ -4,9 +4,6 @@ from tkinter import messagebox
 import webbrowser
 import pandas as pd
 import random
-from rich.console import Console
-
-console = Console()
 
 
 def main():
@@ -29,7 +26,6 @@ def main():
             filtered_students = students  # 不筛选性别
         else:
             filtered_students = [student for student in students if student['性别'] == selected_sex]
-        print(filtered_students)
         if num_to_select > len(filtered_students):
             messagebox.showerror("错误", f"抽取人数不能超过{len(filtered_students)}")
             return
@@ -55,8 +51,8 @@ def main():
         result_label.config(text=formatted_result, font=("Arial", 20), fg="blue")
 
     try:
-        if os.path.exists(os.path.abspath(os.path.join(os.path.abspath('.'), 'data/students.xlsx'))):
-            df = pd.read_excel(os.path.abspath(os.path.join(os.path.abspath('.'), 'data/students.xlsx')))
+        if os.path.exists(os.path.join(os.path.abspath(os.path.dirname(__file__)), '../data/students.xlsx')):
+            df = pd.read_excel(os.path.join(os.path.abspath(os.path.dirname(__file__)), '../data/students.xlsx'))
             hard_data = df.columns.to_list()
             if '学号' not in hard_data or '性别' not in hard_data or '姓名' not in hard_data:
                 messagebox.showinfo('提示', '花名册已存在，但读取数据时出错，请检查花名册是否符合要求')
@@ -65,7 +61,6 @@ def main():
                 # 将学生数据转换为字典列表
                 students = df.to_dict('records')
                 number_list = df.to_dict('list')
-                console.print(number_list)
 
             # GUI
             root = tk.Tk()
