@@ -12,6 +12,8 @@ def main():
         selected_sex = sex_selected_value.get()
         # 获取用户选择的显示方式
         display_type = name_or_number.get()
+
+        repeated = not_repeated.get()
         # 获取用户输入的抽取个数
         try:
             num_to_select = int(entry.get())
@@ -24,8 +26,6 @@ def main():
             filtered_students = students  # 不筛选性别
         else:
             filtered_students = [student for student in students if student['性别'] == selected_sex]
-
-        # 检查抽取个数是否超过可抽取的学生数量
         if num_to_select > len(filtered_students):
             messagebox.showerror("错误", f"抽取人数不能超过{len(filtered_students)}")
             return
@@ -51,9 +51,8 @@ def main():
         result_label.config(text=formatted_result, font=("Arial", 20), fg="blue")
 
     try:
-        if os.path.exists('../data/students.xlsx'):
-            file_path = '../data/students.xlsx'
-            df = pd.read_excel(file_path)
+        if os.path.exists(os.path.join(os.path.abspath(os.path.dirname(__file__)), '../data/students.xlsx')):
+            df = pd.read_excel(os.path.join(os.path.abspath(os.path.dirname(__file__)), '../data/students.xlsx'))
             hard_data = df.columns.to_list()
             if '学号' not in hard_data or '性别' not in hard_data or '姓名' not in hard_data:
                 messagebox.showinfo('提示', '花名册已存在，但读取数据时出错，请检查花名册是否符合要求')
@@ -61,17 +60,16 @@ def main():
             else:
                 # 将学生数据转换为字典列表
                 students = df.to_dict('records')
+                number_list = df.to_dict('list')
 
             # GUI
             root = tk.Tk()
             root.title('抽号机')
             root.geometry("1200x400")  # 设置窗口大小
 
-            # 结果显示标签（放在顶部）
             result_label = tk.Label(root, text="", font=("Arial", 20), fg="blue")
             result_label.pack(pady=20)
 
-            # 创建一个 Frame 用于放置筛选条件、输入框和按钮（横向排列）
             control_frame = tk.Frame(root)
             control_frame.pack(pady=10)
 
@@ -106,6 +104,11 @@ def main():
             # 提交按钮
             button = tk.Button(control_frame, text="抽取", command=show_selected)
             button.grid(row=0, column=9, padx=10)
+
+            # 周期内不重复
+            not_repeated = tk.StringVar(value='yes')
+            not_repeated_yes = tk.Radiobutton(control_frame, text='开', variable=not_repeated, value='yes')
+            not_repeated_yes = tk.Radiobutton(control_frame, text='关', variable=not_repeated, value='no')
 
             # 运行主循环
             root.mainloop()

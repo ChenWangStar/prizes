@@ -13,6 +13,7 @@ class Box:
     column = 1  # 类变量，用于记录当前列
 
     def __init__(self, box_info: str, window: tk.Tk):
+        global photo
         """
         :param box_info: 盒子内部显示信息
         :param window: 窗口
@@ -23,20 +24,15 @@ class Box:
         self.button = None  # 用于保存按钮引用
         self.label = None  # 用于保存标签引用
 
+        self.image = photo
+
     def get_index(self) -> int:
         return self.index
-
-    def load_and_resize_image(self, path: str, size: tuple):
-        """加载并缩放图片"""
-        image = Image.open(path)
-        resized_image = image.resize(size, Image.LANCZOS)
-        return ImageTk.PhotoImage(resized_image)
 
     def registered_box(self):
         Box.index += 1
         self.index = Box.index  # 按钮的索引
-
-        self.photo = self.load_and_resize_image("../resource/box_closed.png", (100, 100))
+        self.photo = self.image
 
         self.button = tk.Button(
             self.window,
@@ -72,8 +68,8 @@ def show_error_info(error_info: str):
 if __name__ == '__main__':
     try:
         while True:
-            if os.path.exists('../data/prizes.json'):
-                with open('../data/prizes.json', 'r') as f:
+            if os.path.exists(os.path.join(os.path.abspath(os.path.dirname(__file__)), '../data/prizes.json')):
+                with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), '../data/prizes.json'), 'r') as f:
                     prize_list = json.load(f)
                 prize_list = [f'奖品{x}' for x in range(60)]
                 if len(prize_list) == 0:
@@ -84,7 +80,7 @@ if __name__ == '__main__':
                 else:
                     break
             else:
-                with open('../data/prizes.json', 'w') as f:
+                with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), '../data/prizes.json'), 'w') as f:
                     f.write('[]')
 
         random.shuffle(prize_list)
@@ -94,8 +90,14 @@ if __name__ == '__main__':
         root.geometry('1920x1080')
         root.resizable(False, False)
 
+        # Load image (box_closed.png)
+        image = Image.open(os.path.join(os.path.abspath(os.path.dirname(__file__)), '../resource/box_closed.png'))
+        resized_image = image.resize((100, 100), Image.LANCZOS)
+        photo = ImageTk.PhotoImage(resized_image)
+
         # 创建并注册按钮
         boxes = []  # 用于保存所实例化对象
+
         for info in prize_list:
             box = Box(info, root)
             boxes.append(box)
