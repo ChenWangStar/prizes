@@ -71,7 +71,7 @@ if __name__ == '__main__':
             if os.path.exists(os.path.join(os.path.abspath(os.path.dirname(__file__)), '../data/prizes.json')):
                 with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), '../data/prizes.json'), 'r') as f:
                     prize_list = json.load(f)
-                prize_list = [f'奖品{x}' for x in range(60)]
+                # prize_list = [f'奖品{x}' for x in range(60)]
                 if len(prize_list) == 0:
                     if messagebox.askquestion('提示', '未检测到存在奖品信息，请问需要添加吗?（否即退出）') == 'yes':
                         run_mainloop()
